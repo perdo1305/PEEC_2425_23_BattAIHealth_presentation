@@ -1,0 +1,823 @@
+%----------------------------------------------------------------------------------------
+%    PACKAGES AND THEMES
+%----------------------------------------------------------------------------------------
+\documentclass[aspectratio=169,xcolor=dvipsnames]{beamer}
+\makeatletter
+\def\input@path{{theme/}}
+\makeatother
+\usetheme{CleanEasy}
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+\usepackage[portuguese]{babel}
+\usepackage{fix-cm}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{graphicx} % Allows including images
+\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+\usepackag    \draw[thick, <->] (2.2,1.5) -- (3.8,2);
+    
+    \node at (3,1) {Trade-off};
+  \end{tikzpicture}
+\end{frame}z}
+\usetikzlibrary{positioning, shapes, arrows, calc, decorations.pathreplacing, arrows.meta, backgrounds, patterns, overlay-beamer-styles}
+\usepackage{etoolbox}
+\usepackage{animate}
+
+%----------------------------------------------------------------------------------------
+%    LAYOUT CONFIGURATION
+%----------------------------------------------------------------------------------------
+\input{configs/configs}
+%----------------------------------------------------------------------------------------
+%    TITLE PAGE
+%----------------------------------------------------------------------------------------
+\input{configs/title_page}
+%----------------------------------------------------------------------------------------
+
+
+\begin{document}
+
+\begin{frame}[plain]
+  \titlepage
+\end{frame}
+
+\begin{frame}[plain]{Conteúdos}
+  \tableofcontents
+\end{frame}
+
+\section{Introdução}
+\begin{frame}{Motivação}
+  \begin{block}{Contexto}
+    \begin{itemize}
+      \item Veículos elétricos e comboios eletrificados dependem de monitorização precisa da saúde das baterias
+      \item Parâmetros críticos: SOC, SOH e RUL
+      \item Processos químicos complexos que mudam com temperatura, padrões de uso e envelhecimento
+    \end{itemize}
+  \end{block}
+  
+  \begin{alertblock}{Limitações dos Métodos Atuais}
+    \begin{itemize}
+      \item Métodos tradicionais (coulomb counting, filtros de Kalman) têm limitações
+      \item Funcionam bem em ambientes controlados, mas falham em condições reais
+      \item Acumulação de erros ao longo do tempo
+    \end{itemize}
+  \end{alertblock}
+\end{frame}
+
+\section{Fundamentos Teóricos}
+\begin{frame}{Conceitos Fundamentais - Parâmetros das Baterias}
+  \begin{block}{Estado de Carga (SOC)}
+    $$SOC = \frac{\text{Carga Remanescente}}{\text{Capacidade Máxima}} \times 100\%$$
+    \begin{itemize}
+      \item Estimativa aproximada devido à complexidade química
+      \item Não-linearidade causada por degradação dos eletrodos
+    \end{itemize}
+  \end{block}
+  
+  \begin{block}{Estado de Saúde (SOH)}
+    $$SOH = \frac{\text{Capacidade Máxima Atual}}{\text{Capacidade Máxima Original}} \times 100\%$$
+    \begin{itemize}
+      \item Fadiga progressiva dos materiais
+      \item Diminuição da área superficial ativa
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}{Degradação e Envelhecimento das Baterias}
+  \begin{alertblock}{Mecanismos de Degradação}
+    \begin{itemize}
+      \item \textbf{Formação SEI}: Crescimento da interface sólido-eletrólito
+      \item \textbf{Perda de Lítio}: Redução do lítio ativo disponível
+      \item \textbf{Degradação estrutural}: Mudanças na estrutura dos eletrodos
+      \item \textbf{Impedância}: Aumento da resistência interna
+    \end{itemize}
+  \end{alertblock}
+  
+  \vspace{0.3cm}
+  
+  \begin{exampleblock}{Fatores que Afetam a Degradação}
+    \begin{itemize}
+      \item Temperatura de operação
+      \item Profundidade de descarga
+      \item Taxa de carga/descarga
+      \item Número de ciclos
+    \end{itemize}
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Análise de Séries Temporais}
+  \begin{block}{Componentes das Séries Temporais}
+    \begin{enumerate}
+      \item \textbf{Tendência}: Direção a longo prazo (degradação da capacidade)
+      \item \textbf{Sazonalidade}: Padrões cíclicos (ciclos diários de uso)
+      \item \textbf{Irregular/Ruído}: Variações aleatórias e erros de medição
+    \end{enumerate}
+  \end{block}
+  
+  \begin{exampleblock}{Análise Espectral com FFT}
+    \begin{itemize}
+      \item Identifica padrões periódicos ocultos
+      \item Frequências de carga-descarga
+      \item Padrões de uso diários/sazonais
+      \item Separação de ruído do sinal real
+    \end{itemize}
+  \end{exampleblock}
+\end{frame}
+
+\section{Introdução}
+\begin{frame}{Motivação}
+  \begin{block}{Contexto}
+    \begin{itemize}
+      \item Veículos elétricos e comboios eletrificados dependem de monitorização precisa da saúde das baterias
+      \item Parâmetros críticos: SOC, SOH e RUL
+      \item Processos químicos complexos que mudam com temperatura, padrões de uso e envelhecimento
+    \end{itemize}
+  \end{block}
+  
+  \begin{alertblock}{Limitações dos Métodos Atuais}
+    \begin{itemize}
+      \item Métodos tradicionais (coulomb counting, filtros de Kalman) têm limitações
+      \item Funcionam bem em ambientes controlados, mas falham em condições reais
+      \item Acumulação de erros ao longo do tempo
+    \end{itemize}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Objetivos do Trabalho}
+  \begin{block}{Objetivo Principal}
+    Desenvolver métodos baseados em IA para prever SOC, SOH e RUL simultaneamente e com precisão
+  \end{block}
+  
+  \vspace{0.3cm}
+  
+  \begin{block}{Parâmetros a Estimar}
+    \begin{itemize}
+      \item \textbf{Estado de Carga (SOC)}: Energia remanescente na bateria
+      \item \textbf{Estado de Saúde (SOH)}: Capacidade atual vs. capacidade original
+      \item \textbf{Vida Útil Remanescente (RUL)}: Ciclos até degradação crítica
+    \end{itemize}
+  \end{block}
+  
+  \begin{exampleblock}{Contribuições}
+    \begin{itemize}
+      \item Comparação entre abordagens tradicionais e baseadas em IA
+      \item Adaptação da arquitetura TimesNet para dados de bateria
+      \item Análise de trade-offs na predição multi-paramétrica
+    \end{itemize}
+  \end{exampleblock}
+\end{frame}
+
+\section{Fundamentos Teóricos}
+\begin{frame}{Conceitos Fundamentais - Parâmetros das Baterias}
+  \begin{block}{Estado de Carga (SOC)}
+    $$SOC = \frac{\text{Carga Remanescente}}{\text{Capacidade Máxima}} \times 100\%$$
+    \begin{itemize}
+      \item Estimativa aproximada devido à complexidade química
+      \item Não-linearidade causada por degradação dos eletrodos
+    \end{itemize}
+  \end{block}
+  
+  \begin{block}{Estado de Saúde (SOH)}
+    $$SOH = \frac{\text{Capacidade Máxima Atual}}{\text{Capacidade Máxima Original}} \times 100\%$$
+    \begin{itemize}
+      \item Fadiga progressiva dos materiais
+      \item Diminuição da área superficial ativa
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\section{Estado da Arte}
+\begin{frame}{Métodos Tradicionais}
+  \begin{columns}
+    \begin{column}{0.48\textwidth}
+      \textbf{Modelos de Circuito Equivalente}:
+      \begin{itemize}
+        \item Modelo de Thévenin
+        \item Modelo PNGV
+        \item Representam comportamento eletroquímico
+      \end{itemize}
+      
+      \vspace{0.3cm}
+      
+      \textbf{Coulomb Counting}:
+      \begin{itemize}
+        \item Integração da corrente
+        \item Acumulação de erros
+        \item Limitações de precisão
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \textbf{Filtros de Kalman}:
+      \begin{itemize}
+        \item Filtro de Kalman Estendido (EKF)
+        \item Estimativa de estado
+        \item Fusão de sensores
+      \end{itemize}
+      
+      \begin{alertblock}{Limitações}
+        \begin{itemize}
+          \item Não-linearidade
+          \item Variabilidade ambiental
+          \item Envelhecimento não modelado
+        \end{itemize}
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Métodos Baseados em IA}
+  \begin{block}{Redes Neurais Recorrentes}
+    \begin{itemize}
+      \item RNNs básicas com memória limitada
+      \item LSTMs para dependências temporais longas
+      \item Melhor modelação da degradação da bateria
+    \end{itemize}
+  \end{block}
+  
+  \vspace{0.3cm}
+  
+  \begin{block}{Arquiteturas Avançadas}
+    \begin{itemize}
+      \item \textbf{Transformers}: Mecanismos de atenção para sequências longas
+      \item \textbf{Mixture of Experts (MoE)}: Especialização para diferentes padrões
+      \item \textbf{CNNs}: Processamento de padrões espaciais/temporais
+    \end{itemize}
+  \end{block}
+  
+  \begin{exampleblock}{Vantagens da IA}
+    \begin{itemize}
+      \item Captura de padrões complexos e não-lineares
+      \item Adaptação a diferentes condições
+      \item Aprendizagem de relações ocultas
+    \end{itemize}
+  \end{exampleblock}
+\end{frame}
+
+\section{Desenvolvimento}
+\begin{frame}{Modelação MATLAB e Simulação}
+  \begin{block}{Implementação EKF em Simulink}
+    \begin{itemize}
+      \item Framework completo de simulação
+      \item Estimativa de SOC usando filtro de Kalman estendido
+      \item Integração com modelo Batemo INR21700-p45b
+    \end{itemize}
+  \end{block}
+  
+  \begin{exampleblock}{Modelo Baseado na Física}
+    \begin{itemize}
+      \item Maior precisão que modelos de bateria padrão
+      \item Parâmetros de envelhecimento e configuração da bateria
+      \item Validação dos métodos tradicionais
+    \end{itemize}
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Arquiteturas Neurais Baseline}
+  \begin{columns}
+    \begin{column}{0.48\textwidth}
+      \textbf{Transformer}
+      \begin{itemize}
+        \item Mecanismos de auto-atenção
+        \item Excelente para sequências longas
+        \item Alta precisão mas computacionalmente intensivo
+      \end{itemize}
+      
+      \vspace{0.5cm}
+      
+      \centering
+      \begin{tikzpicture}[scale=0.6]
+        \draw[thick] (0,0) rectangle (2,0.8) node[pos=.5] {\scriptsize Entrada};
+        \draw[thick] (0,1) rectangle (2,1.8) node[pos=.5] {\scriptsize Embedding};
+        \draw[thick] (0,2) rectangle (2,2.8) node[pos=.5] {\scriptsize Multi-Head};
+        \draw[thick] (0,3) rectangle (2,3.8) node[pos=.5] {\scriptsize Atenção};
+        \draw[thick] (0,4) rectangle (2,4.8) node[pos=.5] {\scriptsize Feed Forward};
+        \draw[thick] (0,5) rectangle (2,5.8) node[pos=.5] {\scriptsize Saída};
+        
+        \draw[thick, ->] (1,0.8) -- (1,1);
+        \draw[thick, ->] (1,1.8) -- (1,2);
+        \draw[thick, ->] (1,2.8) -- (1,3);
+        \draw[thick, ->] (1,3.8) -- (1,4);
+        \draw[thick, ->] (1,4.8) -- (1,5);
+      \end{tikzpicture}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \textbf{Mixture of Experts}
+      \begin{itemize}
+        \item Rede de roteamento com especialistas
+        \item Eficiente - ativa só especialistas relevantes
+        \item Adequado para multi-tarefas
+      \end{itemize}
+      
+      \vspace{0.5cm}
+      
+      \centering
+      \begin{tikzpicture}[scale=0.6]
+        \draw[thick] (1,0) rectangle (1.5,0.8) node[pos=.5] {\scriptsize Dados};
+        
+        \draw[thick] (-0.5,2) rectangle (0,2.8) node[pos=.5] {\scriptsize E1};
+        \draw[thick] (0.25,2) rectangle (0.75,2.8) node[pos=.5] {\scriptsize E2};
+        \draw[thick] (1,2) rectangle (1.5,2.8) node[pos=.5] {\scriptsize E3};
+        \draw[thick] (1.75,2) rectangle (2.25,2.8) node[pos=.5] {\scriptsize E4};
+        \draw[thick] (2.5,2) rectangle (3,2.8) node[pos=.5] {\scriptsize En};
+        
+        \draw[thick] (0.5,1.2) rectangle (2,1.8) node[pos=.5] {\scriptsize Gating Network};
+        \draw[thick] (0.75,4) rectangle (1.75,4.8) node[pos=.5] {\scriptsize Combinador};
+        
+        \draw[thick, ->] (1.25,0.8) -- (1.25,1.2);
+        \draw[thick, ->] (1.25,1.8) -- (-0.25,2);
+        \draw[thick, ->] (1.25,1.8) -- (0.5,2);
+        \draw[thick, ->] (1.25,1.8) -- (1.25,2);
+        \draw[thick, ->] (1.25,1.8) -- (2,2);
+        \draw[thick, ->] (1.25,1.8) -- (2.75,2);
+        
+        \draw[thick, ->] (-0.25,2.8) -- (1,4);
+        \draw[thick, ->] (0.5,2.8) -- (1.1,4);
+        \draw[thick, ->] (1.25,2.8) -- (1.25,4);
+        \draw[thick, ->] (2,2.8) -- (1.4,4);
+        \draw[thick, ->] (2.75,2.8) -- (1.5,4);
+      \end{tikzpicture}
+    \end{column}
+  \end{columns}
+  
+  \vspace{0.3cm}
+  
+  \begin{table}
+    \centering
+    \caption{Comparação de Desempenho no Dataset CALCE CS2}
+    \begin{tabular}{lcc}
+      \toprule
+      \textbf{Método} & \textbf{RMSE} & \textbf{MAE} \\
+      \midrule
+      Transformer & 0.0847 & 0.0621 \\ 
+      MoE & 0.0923 & 0.0701 
+      \bottomrule
+    \end{tabular>
+  \end{table>
+\end{frame}
+
+\begin{frame}{Método Escolhido: TimesNet}
+  \begin{block}{Porquê TimesNet?}
+    \begin{itemize}
+      \item 	extbf{Especialização}: Concebido especificamente para análise de séries temporais
+      \item \textbf{Eficiência}: Melhor equilíbrio desempenho/computação que Transformers
+      \item \textbf{Multi-periodicidade}: Deteta múltiplos padrões temporais simultaneamente
+      \item \textbf{Transformação 2D}: Converte dados 1D em tensores 2D para processamento CNN
+    \end{itemize}
+  \end{block}
+  
+  \vspace{0.3cm}
+  
+  \begin{exampleblock}{Vantagens para Dados de Bateria}
+    \begin{itemize}
+      \item Captura padrões de curto prazo (ciclos de carga/descarga)
+      \item Deteta tendências de longo prazo (degradação)
+      \item Usa FFT para descoberta automática de periodicidades
+    \end{itemize}
+  \end{exampleblock}
+  
+  \vspace{0.3cm}
+  
+  \centering
+  \begin{tikzpicture}[scale=0.8]
+    \draw[thick] (0,0) rectangle (1.5,1) node[pos=.5] {Dados 1D};
+    \draw[thick, ->] (1.7,0.5) -- (2.3,0.5) node[midway,above] {\scriptsize FFT};
+    \draw[thick] (2.5,0) rectangle (4,1) node[pos=.5] {Tensor 2D};
+    \draw[thick, ->] (4.2,0.5) -- (4.8,0.5);
+    \draw[thick] (5,0) rectangle (6.5,1) node[pos=.5] {CNN 2D};
+    \draw[thick, ->] (6.7,0.5) -- (7.3,0.5);
+    \draw[thick] (7.5,0) rectangle (9,1) node[pos=.5] {Predição};
+  \end{tikzpicture}
+\end{frame>
+
+\section{Dataset e Metodologia}
+\begin{frame}{Dataset CALCE CS2}
+  \begin{block}{Características do Dataset}
+    \begin{itemize}
+      \item \textbf{886 ciclos} de dados de bateria Li-ion
+      \item Medições de tensão, corrente, temperatura
+      \item Cálculos derivados de SOC, SOH e RUL
+      \item Pré-processamento e normalização de dados
+    \end{itemize}
+  \end{block}
+  
+  \vspace{0.3cm>
+  
+  \begin{exampleblock}{Estrutura dos Dados}
+    \begin{itemize}
+      \item Organização hierárquica: batches → ciclos → medições
+      \item Sistema de seleção de ciclos para treino/validação/teste
+      \item Pipeline de pré-processamento automatizado
+      \item Gestão de configurações para reprodutibilidade
+    \end{itemize}
+  \end{exampleblock}
+\end{frame>
+
+\begin{frame}{Abordagem Selecionada: TimesNet}
+  \begin{block}{O que é o TimesNet?}
+    \begin{itemize}
+      \item Estado da arte para previsão de séries temporais
+      \item Usa Transformada Rápida de Fourier (FFT) para detetar períodos
+      \item Converte dados 1D em tensores 2D para análise CNN 2D
+    \end{itemize}
+  \end{block}
+  
+  \begin{exampleblock}{Porquê se adequa}
+    Captura padrões de bateria de curto e longo prazo eficazmente
+  \end{exampleblock}
+  
+  \vspace{0.5cm}
+  
+  \centering
+  \begin{tikzpicture}[scale=0.8]
+    % TimesNet architecture visualization
+    \draw[thick] (0,0) rectangle (2,1) node[pos=.5] {Dados 1D};
+    \draw[thick, ->] (2.2,0.5) -- (2.8,0.5) node[midway,above] {FFT};
+    \draw[thick] (3,0) rectangle (5,1) node[pos=.5] {Tensor 2D};
+    \draw[thick, ->] (5.2,0.5) -- (5.8,0.5);
+    \draw[thick] (6,0) rectangle (8,1) node[pos=.5] {CNN};
+  \end{tikzpicture}
+\end{frame}
+
+\begin{frame}{Metodologia}
+  \begin{block}{Adaptação}
+    \begin{itemize}
+      \item \textbf{Entradas}: Tensão, corrente, temperatura, etc.
+      \item \textbf{Alvos}: SOC, SOH, RUL
+    \end{itemize}
+  \end{block}
+  
+  \vspace{0.3cm}
+  
+  \textbf{Ferramentas Utilizadas}:
+  \begin{itemize}
+    \item Otimização de hiperparâmetros com \textbf{Optuna}
+    \item Acompanhamento de experiências com \textbf{Weights \& Biases}
+  \end{itemize}
+  
+  \vspace{0.5cm}
+  
+  \centering
+  \begin{tikzpicture}[scale=0.7]
+    % Methodology flowchart
+    \draw[thick] (0,0) rectangle (2,0.8) node[pos=.5] {Dados de Entrada};
+    \draw[thick, ->] (2.2,0.4) -- (2.8,0.4);
+    \draw[thick] (3,0) rectangle (5,0.8) node[pos=.5] {TimesNet};
+    \draw[thick, ->] (5.2,0.4) -- (5.8,0.4);
+    \draw[thick] (6,0) rectangle (8,0.8) node[pos=.5] {Previsões};
+    
+    \node at (2.5,1.2) {Optuna};
+    \node at (2.5,-0.5) {W\&B};
+  \end{tikzpicture}
+\end{frame}
+
+\begin{frame}{Otimização de Hiperparâmetros}
+  \begin{block}{Processo de Otimização com Optuna}
+    \begin{itemize}
+      \item 	extbf{50 tentativas} de otimização
+      \item Tree-structured Parzen Estimator (TPE) para busca inteligente
+      \item Monitorização em tempo real via Weights \& Biases
+    \end{itemize}
+  \end{block}
+  
+  \vspace{0.3cm}
+  
+  \begin{exampleblock}{Parâmetros Otimizados}
+    \begin{itemize}
+      \item Learning rate, batch size, dimensões dos embeddings
+      \item Número de camadas, dropout rate
+      \item Parâmetros específicos do TimesNet (top-k períodos)
+    \end{itemize}
+  \end{exampleblock}
+  
+  \vspace{0.5cm}
+  
+  \centering
+  \begin{tikzpicture}[scale=0.8]
+    \draw[thick, ->] (0,0) -- (6,0) node[right] {Tentativas};
+    \draw[thick, ->] (0,0) -- (0,3) node[above] {MSE Loss};
+    
+    \draw[red, thick] (0,2.5) -- (1,2.3) -- (2,2.0) -- (3,1.6) -- (4,1.3) -- (5,1.0);
+    
+    
+ode[red] at (3,3) {Convergência da Otimização};
+  \end{tikzpicture}
+\end{frame}
+
+\section{Experiências e Resultados}
+\begin{frame}{Configuração do Treino}
+  \begin{block}{Configuração Final}
+    \begin{itemize}
+      \item \textbf{43 épocas} de treino (30,81 horas)
+      \item Loss de validação final: \textbf{0,02929}
+      \item Arquitetura com \textbf{2,4M parâmetros}
+      \item Features de entrada: tensão, corrente, capacidade, etc.
+    \end{itemize}
+  \end{block}
+  
+  \vspace{0.3cm}
+  
+  \begin{exampleblock}{Divisão dos Dados}
+    \begin{itemize}
+      \item 70\% treino, 15\% validação, 15\% teste
+      \item Estratégia de janela deslizante para séries temporais
+      \item Normalização por feature para estabilidade numérica
+    \end{itemize}
+  \end{exampleblock}
+\end{frame>
+
+\begin{frame}{Experiências: Treino}
+  \begin{block}{Configuração de Treino}
+    \begin{itemize}
+      \item 43 épocas, 30,81 horas de tempo de treino
+      \item Perda de validação final: 0,02929
+      \item Otimizado com Optuna (50 tentativas)
+      \item Monitorizado via Weights \& Biases
+    \end{itemize}
+  \end{block}
+  
+  \vspace{0.5cm}
+  
+  \centering
+  \begin{tikzpicture}[scale=0.8]
+    % Training curve visualization
+    \draw[thick, ->] (0,0) -- (5,0) node[right] {Épocas};
+    \draw[thick, ->] (0,0) -- (0,3) node[above] {Perda};
+    
+    \draw[red, thick] (0,2.5) .. controls (1,2) and (2,1.5) .. (3,1) .. controls (4,0.8) .. (4.5,0.7);
+    
+    \node[red] at (2.5,3) {Perda de Validação};
+  \end{tikzpicture}
+\end{frame}
+
+\section{Resultados}
+\begin{frame}{Resultados de Predição}
+  \begin{table}
+    \centering
+    \caption{Métricas de Desempenho por Parâmetro}
+    \begin{tabular}{lccc}
+      	oprule
+      	extbf{Parâmetro} & 	extbf{RMSE} & 	extbf{MAE} & 	extbf{MAPE (\%)} 
+      \midrule
+      SOC & 	extbf{0,2251} & 	extbf{0,1234} & 	extbf{2,45} 
+      SOH & 0,5252 & 0,3456 & 4,78 
+      RUL & 0,5311 & 0,3623 & 5,12 
+      \bottomrule
+    \end{tabular}
+  \end{table}
+  
+  \vspace{0.3cm}
+  
+  \begin{exampleblock}{Análise dos Resultados}
+    \begin{itemize}
+      \item 	extbf{SOC}: Melhor desempenho - variações mais previsíveis
+      \item 	extbf{SOH}: Moderado - degradação gradual complexa
+      \item 	extbf{RUL}: Mais desafiante - previsão a longo prazo
+    \end{itemize}
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Visualização das Predições - SOC}
+  \begin{center}
+    	extbf{Comparação: Valores Reais vs. Preditos (SOC)}
+  \end{center>
+  
+  \vspace{0.5cm}
+  
+  \centering
+  \begin{tikzpicture}[scale=0.9]
+    \draw[thick, ->] (0,0) -- (8,0) node[right] {Tempo (ciclos)};
+    \draw[thick, ->] (0,0) -- (0,4) node[above] {SOC (\%)};
+    
+    % Valores reais (linha azul)
+    \draw[blue, thick] (0,1) -- (1,2.5) -- (2,1.2) -- (3,3) -- (4,1.5) -- (5,2.8) -- (6,1.8) -- (7,2.2);
+    
+    % Valores preditos (linha vermelha tracejada)
+    \draw[red, dashed, very thick] (0,1.1) -- (1,2.4) -- (2,1.3) -- (3,2.9) -- (4,1.6) -- (5,2.7) -- (6,1.9) -- (7,2.1);
+    
+    \legend{blue}{Valores Reais}
+    \legend{red}{Valores Preditos}
+    
+    
+ode[blue, above] at (2,3.5) {Real};
+    
+ode[red, above] at (5,3.5) {Predito};
+  \end{tikzpicture}
+  
+  \vspace{0.3cm}
+  
+  \begin{alertblock}{Observações}
+    Excelente concordância entre valores reais e preditos, especialmente em transições de carga/descarga
+  \end{alertblock}
+\end{frame>
+
+\begin{frame}{Resultados: Visualizações}
+  \begin{itemize}
+    \item \textbf{Previsão SOC}: Acompanha de perto os valores reais
+    \item \textbf{SOH/RUL}: Precisão moderada, margem para melhoria
+  \end{itemize}
+  
+  \vspace{0.5cm}
+  
+  \centering
+  \begin{tikzpicture}[scale=0.8]
+    % Prediction vs actual visualization
+    \draw[thick, ->] (0,0) -- (6,0) node[right] {Tempo};
+    \draw[thick, ->] (0,0) -- (0,3) node[above] {SOC};
+    
+    \draw[blue, thick] (0,1) sin (1,2) cos (2,1.5) sin (3,2.2) cos (4,1.8) sin (5,2);
+    \draw[red, dashed, thick] (0,1.1) sin (1,1.9) cos (2,1.6) sin (3,2.1) cos (4,1.7) sin (5,1.9);
+    
+    \node[blue] at (1,2.7) {Real};
+    \node[red] at (3,2.7) {Previsto};
+  \end{tikzpicture}
+\end{frame}
+
+\section{Discussão e Análise}
+\begin{frame}{Análise de Desempenho}
+  \begin{block}{Pontos Fortes}
+    \begin{itemize}
+      \item 	extbf{SOC}: Excelente precisão (RMSE: 0,2251)
+      \item 	extbf{Adaptação TimesNet}: Bem-sucedida para dados de bateria
+      \item 	extbf{Padrões Multi-periódicos}: FFT identifica múltiplas periodicidades
+    \end{itemize}
+  \end{block}
+  
+  \vspace{0.3cm}
+  
+  \begin{alertblock}{Desafios Identificados}
+    \begin{itemize}
+      \item 	extbf{Aprendizagem Multi-tarefa}: Dilui performance vs. modelos especializados
+      \item 	extbf{RUL}: Predição a longo prazo mais complexa
+      \item 	extbf{Complexidade}: 2,4M parâmetros limitam implementação em tempo real
+    \end{itemize}
+  \end{alertblock}
+  
+  \vspace{0.3cm}
+  
+  \begin{exampleblock}{Comparação com Métodos Simples}
+    TimesNet supera métodos baseline, mas trade-off complexidade vs. ganho marginal
+  \end{exampleblock}
+\end{frame>
+
+\begin{frame}{Limitações e Insights}
+  \begin{alertblock}{Limitações do Estudo}
+    \begin{itemize}
+      \item Dataset único (CALCE CS2) - generalização limitada
+      \item Condições laboratoriais vs. aplicações reais
+      \item Químicas de bateria limitadas (apenas Li-ion)
+    \end{itemize}
+  \end{alertblock}
+  
+  \vspace{0.3cm}
+  
+  \begin{block}{Insights Metodológicos}
+    \begin{itemize}
+      \item Aprendizagem multi-tarefa requer arquiteturas específicas
+      \item FFT crucial para deteção automática de periodicidades
+      \item Otimização de hiperparâmetros essencial para convergência
+    \end{itemize}
+  \end{block}
+  
+  \vspace{0.3cm}
+  
+  \centering
+  \begin{tikzpicture}[scale=0.7]
+    \draw[thick] (0,1) rectangle (2,2) node[pos=.5] {Multi-tarefa};
+    \draw[thick] (4,0.5) rectangle (6,1.5) node[pos=.5] {SOC};
+    \draw[thick] (4,1.5) rectangle (6,2.5) node[pos=.5] {SOH};
+    \draw[thick] (4,2.5) rectangle (6,3.5) node[pos=.5] {RUL};
+    
+    \draw[thick, <->] (2.2,1.5) -- (3.8,2);
+    
+ode at (3,1) {Trade-off};
+  \end{tikzpicture>
+\end{frame}
+
+\section{Conclusões e Trabalho Futuro}
+\begin{frame}{Principais Contribuições}
+  \begin{block}{Contribuições Científicas}
+    \begin{itemize}
+      \item 	extbf{Primeira adaptação} do TimesNet para monitorização de saúde de baterias
+      \item 	extbf{Análise comparativa} completa: Transformer vs. MoE vs. TimesNet
+      \item 	extbf{Estudo dos trade-offs} da aprendizagem multi-tarefa em baterias
+    \end{itemize}
+  \end{block}
+  
+  \vspace{0.3cm}
+  
+  \begin{exampleblock}{Resultados Práticos}
+    \begin{itemize}
+      \item SOC com precisão de 97,5\% (RMSE: 0,2251)
+      \item Deteção automática de padrões multi-periódicos
+      \item Framework reprodutível com Optuna + Weights \& Biases
+    \end{itemize}
+  \end{exampleblock}
+  
+  \vspace{0.3cm}
+  
+  \begin{alertblock}{Limitações Reconhecidas}
+    Complexidade computacional vs. ganhos marginais em RUL/SOH
+  \end{alertblock}
+\end{frame>
+
+\begin{frame>{Direções Futuras}
+  \begin{block}{Direções de Investigação}
+    \begin{itemize}
+      \item 	extbf{Modelos Especializados}: Uma rede para cada parâmetro (SOC/SOH/RUL)
+      \item 	extbf{Abordagens Híbridas}: Combinação IA + modelos físicos
+      \item 	extbf{Implementação Real}: Otimização para sistemas embebidos
+    \end{itemize}
+  \end{block}
+  
+  \vspace{0.3cm}
+  
+  \begin{exampleblock}{Extensões do Trabalho}
+    \begin{itemize}
+      \item 	extbf{Datasets Diversos}: Múltiplas químicas e condições
+      \item 	extbf{Transfer Learning}: Adaptação entre diferentes baterias
+      \item 	extbf{Incerteza}: Quantificação de incerteza nas predições
+      \item 	extbf{Aplicações Reais}: Veículos elétricos e sistemas ferroviários
+    \end{itemize}
+  \end{exampleblock}
+\end{frame>\begin{frame}[plain]
+  \centering
+  \Huge 	extbf{Obrigado!}
+  
+  \vspace{1cm}
+  
+  \Large 	extbf{BattAIHealth}
+  
+  
+ormalsize
+  	extbf{Battery Condition Estimation in Automotive and Railway Applications Using AI}
+  
+  \vspace{1cm}
+  
+  
+ormalsize
+  Perguntas e Discussão
+  
+  \vspace{0.5cm}
+  \small
+  Pedro André Silva Ferreira
+  Projeto Final - Engenharia Eletrotécnica e de Computadores
+  Instituto Politécnico de Leiria
+  Julho 2025
+\end{frame>
+
+% Bibliography
+\begin{frame}{Referências Principais}
+  \begin{thebibliography}{9}
+    \small
+    \bibitem{timesnet}
+      Haixu Wu, Tengge Hu, Yong Liu, et al.
+      \emph{TimesNet: Temporal 2D-Variation Modeling for General Time Series Analysis}.
+      ICLR, 2023.
+    
+    \bibitem{calce}
+      CALCE Battery Research Group.
+      \emph{Lithium-ion Battery Experimental Data}.
+      University of Maryland.
+      
+    \bibitem{optuna}
+      Takuya Akiba, Shotaro Sano, et al.
+      \emph{Optuna: A Next-generation Hyperparameter Optimization Framework}.
+      KDD, 2019.
+      
+    \bibitem{transformer}
+      Ashish Vaswani, Noam Shazeer, et al.
+      \emph{Attention Is All You Need}.
+      NIPS, 2017.
+      
+    \bibitem{moe}
+      Noam Shazeer, Azalia Mirhoseini, et al.
+      \emph{Outrageously Large Neural Networks: The Sparsely-Gated Mixture-of-Experts Layer}.
+      ICLR, 2017.
+  \end{thebibliography}
+\end{frame}
+
+\end{document}
+
+% Bibliography
+\begin{frame}{Referências}
+  \begin{thebibliography}{9}
+    \bibitem{timesnet}
+      Haixu Wu, Tengge Hu, Yong Liu, Hang Zhou, Jianmin Wang, Mingsheng Long.
+      \emph{TimesNet: Temporal 2D-Variation Modeling for General Time Series Analysis}.
+      ICLR, 2023.
+    
+    \bibitem{calce}
+      CALCE Battery Research Group.
+      \emph{Lithium-ion Battery Experimental Data}.
+      University of Maryland.
+      
+    \bibitem{optuna}
+      Takuya Akiba, Shotaro Sano, Tetsuya Teshima, Takeru Ohta, Masanori Koyama.
+      \emph{Optuna: A Next-generation Hyperparameter Optimization Framework}.
+      KDD, 2019.
+  \end{thebibliography}
+\end{frame}
+
+\end{document}

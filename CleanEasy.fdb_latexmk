@@ -1,0 +1,14 @@
+# Fdb version 3
+["pdflatex"] 1752979303 "/home/pedroferreira/Desktop/presentation/CleanEasy.tex" "CleanEasy.pdf" "CleanEasy" 1752979303
+  "/etc/texmf/web2c/texmf.cnf" 1750635852 475 c0e671620eb5563b2130f56340a5fde8 ""
+  "/home/pedroferreira/Desktop/presentation/CleanEasy.tex" 1752979300 23889 fa64f12aa7cf32607cd35c75139338d5 ""
+  "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
+  "/usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmbx10.tfm" 1136768653 1328 c834bbb027764024c09d3d2bf908b5f0 ""
+  "/usr/share/texlive/texmf-dist/web2c/texmf.cnf" 1644012257 39432 7155514e09a3d69036fac785183a21c2 ""
+  "/usr/share/texmf/web2c/texmf.cnf" 1644012257 39432 7155514e09a3d69036fac785183a21c2 ""
+  "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1750635890 2800630 592ae25acdaf005396b88a052af1d2c9 ""
+  "CleanEasy.aux" 1752979303 32 3985256e7290058c681f74d7a3565a19 ""
+  "CleanEasy.tex" 1752979300 23889 fa64f12aa7cf32607cd35c75139338d5 ""
+  (generated)
+  "CleanEasy.log"
+  "CleanEasy.pdf"
